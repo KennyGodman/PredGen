@@ -7,8 +7,8 @@ import CreateMarket from './components/CreateMarket';
 import MyBets from './components/MyBets';
 import Leaderboard from './components/Leaderboard';
 import TradingLeagueBanner from './components/TradingLeagueBanner';
+import WalletConnectModal from './components/WalletConnectModal';
 
-const WALLET_ADDRESS = '0x3f4a...b82c';
 const INITIAL_BALANCE = 10000;
 
 export default function App() {
@@ -18,6 +18,12 @@ export default function App() {
   const [userBets, setUserBets] = useState([]);
   const [walletBalance, setWalletBalance] = useState(INITIAL_BALANCE);
   const [headerSearch, setHeaderSearch] = useState('');
+  
+  // Wallet Connection States
+  const [walletAddress, setWalletAddress] = useState('0x3f4a...b82c'); // Default simulation connected
+  const [walletName, setWalletName] = useState('MetaMask');
+  const [walletIcon, setWalletIcon] = useState('🦊');
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
   const handlePlaceBet = (marketId, side, amount) => {
     const amt = parseFloat(amount);
@@ -75,8 +81,16 @@ export default function App() {
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        walletAddress={WALLET_ADDRESS}
+        walletAddress={walletAddress}
         walletBalance={walletBalance}
+        walletName={walletName}
+        walletIcon={walletIcon}
+        onConnectClick={() => setShowWalletModal(true)}
+        onDisconnect={() => {
+          setWalletAddress(null);
+          setWalletName('');
+          setWalletIcon('');
+        }}
         search={headerSearch}
         onSearchChange={setHeaderSearch}
       />
@@ -276,6 +290,18 @@ export default function App() {
           market={liveSelectedMarket}
           onClose={() => setSelectedMarket(null)}
           onPlaceBet={handlePlaceBet}
+        />
+      )}
+      {/* ── Wallet Connect Modal ─────────────────────────── */}
+      {showWalletModal && (
+        <WalletConnectModal
+          onClose={() => setShowWalletModal(false)}
+          onConnect={(address, name, icon) => {
+            setWalletAddress(address);
+            setWalletName(name);
+            setWalletIcon(icon);
+            setWalletBalance(10000); // Reset or preserve balance
+          }}
         />
       )}
     </>

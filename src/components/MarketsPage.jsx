@@ -17,14 +17,12 @@ const STATUS_FILTERS = [
   { value: 'resolved',  label: 'Resolved' },
 ];
 
-// Fake creator pill data — mirrors fliq.one's creator filter row
-const CREATORS = ['All Creators', 'by CryptoWolf', 'by AcePredictor', 'by MarketMaker', 'by StarGazer', 'by BullBear'];
+
 
 export default function MarketsPage({ markets, onMarketClick, onQuickBet, externalSearch = '' }) {
   const [category, setCategory] = useState('All');
   const [status, setStatus] = useState('all');
   const [sort, setSort] = useState('volume');
-  const [creator, setCreator] = useState('All Creators');
 
   const filtered = useMemo(() => {
     let result = [...markets];
@@ -63,33 +61,7 @@ export default function MarketsPage({ markets, onMarketClick, onQuickBet, extern
         </div>
       </div>
 
-      {/* ── Creator Filter Pills ────────────────────────── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
-        {CREATORS.map(c => (
-          <button
-            key={c}
-            onClick={() => setCreator(c)}
-            style={{
-              flexShrink: 0,
-              padding: '0.25rem 0.75rem',
-              borderRadius: 'var(--r-pill)',
-              fontSize: '0.78rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              outline: 'none',
-              fontFamily: 'var(--font-body)',
-              whiteSpace: 'nowrap',
-              transition: 'all 0.15s ease',
-              background: creator === c ? 'var(--text-0)' : 'var(--bg-1)',
-              color: creator === c ? '#fff' : 'var(--text-2)',
-              border: creator === c ? '1px solid var(--text-0)' : '1px solid var(--border-0)',
-              boxShadow: creator === c ? 'none' : 'var(--shadow-card)',
-            }}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
+
 
       {/* ── Sort / Status controls ──────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>

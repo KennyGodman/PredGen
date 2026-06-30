@@ -95,7 +95,7 @@ export default function MarketCard({ market, onDetailClick, onQuickBet }) {
           </div>
 
           {/* Status chip */}
-          <div style={{ marginTop: '0.3rem' }}>
+          <div style={{ marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
             {isResolving && (
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
@@ -114,6 +114,16 @@ export default function MarketCard({ market, onDetailClick, onQuickBet }) {
                 border: '1px solid var(--border-0)',
               }}>
                 {market.outcome ? `✓ Resolved ${market.outcome}` : 'Resolved'}
+              </span>
+            )}
+            {market.contractAddress && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.2rem',
+                fontSize: '0.62rem', fontWeight: 600, padding: '0.15rem 0.5rem',
+                borderRadius: 'var(--r-pill)', background: 'rgba(13,27,75,0.06)', color: 'var(--teal)',
+                border: '1px solid rgba(13,27,75,0.15)',
+              }}>
+                ⛓️ Deployed
               </span>
             )}
           </div>

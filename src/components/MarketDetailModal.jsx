@@ -299,9 +299,35 @@ export default function MarketDetailModal({ market, onClose, onPlaceBet }) {
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.65rem',
                     color: 'var(--text-2)',
+                    borderBottom: '1px solid var(--border-0)',
                   }}>
                     Source: <a href={market.resolutionSource} target="_blank" rel="noreferrer" style={{ color: 'var(--teal)', textDecoration: 'none' }}>{market.resolutionSource}</a>
                   </div>
+                  {market.contractAddress && (
+                    <div style={{
+                      padding: '0.5rem 1.25rem',
+                      background: 'var(--bg-4)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.68rem',
+                      color: 'var(--text-0)',
+                      borderBottom: '1px solid var(--border-0)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '0.5rem'
+                    }}>
+                      <span>Deployed Contract:</span>
+                      <a 
+                        href={`https://studio.genlayer.com/?import-contract=${market.contractAddress}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: 'var(--teal)', fontWeight: 700, textDecoration: 'none' }}
+                      >
+                        {market.contractAddress}
+                      </a>
+                    </div>
+                  )}
                   <pre style={{
                     padding: '1.25rem',
                     fontFamily: 'var(--font-mono)',

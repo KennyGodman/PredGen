@@ -180,6 +180,7 @@ return call_llm(
     volume24h: 45200,
     resolveDate: '2026-07-19',
     status: 'open',
+    contractAddress: '0xaD19682b48Cc70a41877ecbC0f8Cfc998dAb7dcC',
     resolutionSource: 'https://fifa.com',
     resolutionPrompt: `web_result = get_webpage("https://www.fifa.com/tournaments/mens/worldcup/2026")
 winner = call_llm(f"Based on: {web_result}\\nWho won the 2026 FIFA World Cup? Answer with country name only.")
