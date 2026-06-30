@@ -26,7 +26,7 @@ function fakeCreator(marketId) {
   return names[idx] || 'CryptoWolf';
 }
 
-export default function MarketCard({ market, onDetailClick, onQuickBet }) {
+export default function MarketCard({ market, walletAddress, onConnectClick, onDetailClick, onQuickBet }) {
   const [hovered, setHovered] = useState(false);
   const [pendingSide, setPendingSide] = useState(null); // null = modal closed
   const yesPercent = Math.round(market.yesProb * 100);
@@ -221,6 +221,8 @@ export default function MarketCard({ market, onDetailClick, onQuickBet }) {
         <BetConfirmModal
           market={market}
           initialSide={pendingSide}
+          walletAddress={walletAddress}
+          onConnectClick={onConnectClick}
           onClose={() => setPendingSide(null)}
           onConfirm={(id, side, amount) => {
             onQuickBet(id, side, amount);

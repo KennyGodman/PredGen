@@ -56,10 +56,10 @@ export default function MyBets({ bets, markets, walletBalance }) {
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1rem' }}>
         {[
-          { icon: DollarSign, label: 'WALLET BALANCE', value: `${walletBalance.toLocaleString()} GL`, color: 'var(--accent-cyan)' },
-          { icon: Activity, label: 'TOTAL WAGERED', value: `${totalInvested.toLocaleString()} GL`, color: 'var(--accent-pink)' },
+          { icon: DollarSign, label: 'WALLET BALANCE', value: `${walletBalance.toLocaleString()} GEN`, color: 'var(--accent-cyan)' },
+          { icon: Activity, label: 'TOTAL WAGERED', value: `${totalInvested.toLocaleString()} GEN`, color: 'var(--accent-pink)' },
           { icon: Clock, label: 'OPEN POSITIONS', value: openBets.length.toString(), color: 'var(--accent-gold)' },
-          { icon: TrendingUp, label: 'TOTAL P&L', value: `${pnl >= 0 ? '+' : ''}${pnl.toFixed(0)} GL`, color: pnl >= 0 ? 'var(--accent-green)' : 'var(--accent-pink)' },
+          { icon: TrendingUp, label: 'TOTAL P&L', value: `${pnl >= 0 ? '+' : ''}${pnl.toFixed(0)} GEN`, color: pnl >= 0 ? 'var(--accent-green)' : 'var(--accent-pink)' },
         ].map(({ icon: Icon, label, value, color }) => (
           <div key={label} className="glass-panel" style={{ padding: '1rem', border: `1px solid ${color}20` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
@@ -108,10 +108,10 @@ export default function MyBets({ bets, markets, walletBalance }) {
                     </span>
                     <div style={{ textAlign: 'right' }}>
                       <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                        {bet.amount} GL
+                        {bet.amount} GEN
                       </div>
                       <div className="font-mono" style={{ fontSize: '0.65rem', color: 'var(--accent-gold)' }}>
-                        → {parseFloat(bet.payout).toFixed(0)} GL payout
+                        → {parseFloat(bet.payout).toFixed(0)} GEN payout
                       </div>
                     </div>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--accent-cyan)', padding: '0.2rem 0.5rem', background: 'rgba(0,242,254,0.08)', border: '1px solid rgba(0,242,254,0.2)', borderRadius: '4px' }}>
@@ -153,7 +153,7 @@ export default function MyBets({ bets, markets, walletBalance }) {
                       {bet.side}
                     </span>
                     <span className="font-mono" style={{ fontSize: '0.8rem', fontWeight: 700, color: won ? 'var(--accent-green)' : 'var(--text-muted)' }}>
-                      {won ? `+${(bet.payout - bet.amount).toFixed(0)} GL` : `-${bet.amount} GL`}
+                      {won ? `+${(bet.payout - bet.amount).toFixed(0)} GEN` : `-${bet.amount} GEN`}
                     </span>
                   </div>
                 </div>

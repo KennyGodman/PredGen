@@ -19,7 +19,7 @@ const STATUS_FILTERS = [
 
 
 
-export default function MarketsPage({ markets, onMarketClick, onQuickBet, externalSearch = '' }) {
+export default function MarketsPage({ markets, walletAddress, onConnectClick, onMarketClick, onQuickBet, externalSearch = '' }) {
   const [category, setCategory] = useState('All');
   const [status, setStatus] = useState('all');
   const [sort, setSort] = useState('volume');
@@ -105,7 +105,14 @@ export default function MarketsPage({ markets, onMarketClick, onQuickBet, extern
         className="markets-grid"
         >
           {filtered.map(m => (
-            <MarketCard key={m.id} market={m} onDetailClick={onMarketClick} onQuickBet={onQuickBet} />
+            <MarketCard 
+              key={m.id} 
+              market={m} 
+              walletAddress={walletAddress}
+              onConnectClick={onConnectClick}
+              onDetailClick={onMarketClick} 
+              onQuickBet={onQuickBet} 
+            />
           ))}
         </div>
       )}

@@ -181,7 +181,7 @@ export default function Header({
               padding: '0.3rem 0.75rem',
               flexShrink: 0,
             }}>
-              {walletBalance.toLocaleString()} GL
+              {walletBalance.toLocaleString()} GEN
             </div>
           )}
 
@@ -257,7 +257,7 @@ export default function Header({
                         {walletAddress}
                       </div>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--yes-green)', marginTop: '0.2rem' }}>
-                        {walletBalance.toLocaleString()} GL
+                        {walletBalance.toLocaleString()} GEN
                       </div>
                     </div>
 

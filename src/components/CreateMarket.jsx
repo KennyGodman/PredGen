@@ -189,7 +189,7 @@ export default function CreateMarket({ onCreateMarket }) {
         </div>
 
         {/* Initial Liquidity */}
-        <InputField id="market-pool" label="INITIAL POOL (GL TOKENS)" hint="Amount you seed into the market as initial liquidity.">
+        <InputField id="market-pool" label="INITIAL POOL (GEN TOKENS)" hint="Amount you seed into the market as initial liquidity.">
           <input
             id="market-pool"
             type="number"
@@ -300,7 +300,7 @@ export default function CreateMarket({ onCreateMarket }) {
               <span style={{ color: 'var(--accent-pink)' }}>50% NO</span>
             </div>
             <div style={{ marginTop: '0.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', gap: '1.5rem' }}>
-              <span>Pool: {parseFloat(form.totalPool || 0).toLocaleString()} GL</span>
+              <span>Pool: {parseFloat(form.totalPool || 0).toLocaleString()} GEN</span>
               {form.resolveDate && <span>Resolves: {form.resolveDate}</span>}
             </div>
           </div>

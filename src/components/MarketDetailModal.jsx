@@ -16,7 +16,7 @@ const MOCK_ACTIVITY = [
   { user: '0x2e9c...f84d', side: 'YES', amount: 2000, ago: '1h ago' },
 ];
 
-export default function MarketDetailModal({ market, onClose, onPlaceBet }) {
+export default function MarketDetailModal({ market, walletAddress, onConnectClick, onClose, onPlaceBet }) {
   const [side, setSide] = useState('YES');
   const [amount, setAmount] = useState(100);
   const [showCode, setShowCode] = useState(false);
@@ -391,7 +391,7 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                     }}>
                       {a.side}
                     </span>
-                    <span style={{ color: 'var(--text-0)', fontWeight: 600 }}>{a.amount} GL</span>
+                    <span style={{ color: 'var(--text-0)', fontWeight: 600 }}>{a.amount} GEN</span>
                     <span style={{ color: 'var(--text-3)', fontSize: '0.7rem' }}>{a.ago}</span>
                   </div>
                 ))}
@@ -478,7 +478,7 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                   {/* Amount Input */}
                   <div style={{ marginBottom: '1rem' }}>
                     <label className="font-mono" style={{ fontSize: '0.65rem', color: 'var(--text-muted)', letterSpacing: '0.08em', display: 'block', marginBottom: '0.4rem' }}>
-                      AMOUNT (GL TOKENS)
+                      AMOUNT (GEN TOKENS)
                     </label>
                     <input
                       id="bet-amount-input"
@@ -525,9 +525,9 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                     marginBottom: '1rem',
                   }}>
                     {[
-                      { label: 'Your bet', val: `${amount} GL`, color: 'var(--text-0)' },
-                      { label: 'If correct, payout', val: `${estimatedPayout} GL`, color: 'var(--yes-green)' },
-                      { label: 'Potential profit', val: `+${profit} GL`, color: 'var(--resolving)' },
+                      { label: 'Your bet', val: `${amount} GEN`, color: 'var(--text-0)' },
+                      { label: 'If correct, payout', val: `${estimatedPayout} GEN`, color: 'var(--yes-green)' },
+                      { label: 'Potential profit', val: `+${profit} GEN`, color: 'var(--resolving)' },
                     ].map(({ label, val, color }) => (
                       <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-3)' }}>{label}</span>
@@ -551,6 +551,32 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                     }}>
                       ✓ Bet placed!
                     </div>
+                  ) : !walletAddress ? (
+                    <button
+                      id="place-bet-btn"
+                      onClick={() => {
+                        onConnectClick();
+                        onClose();
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '0.875rem',
+                        fontFamily: 'var(--font-body)',
+                        fontWeight: 700,
+                        fontSize: '0.9rem',
+                        borderRadius: 'var(--r-md)',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        background: '#0d1b4b',
+                        color: '#ffffff',
+                        border: 'none',
+                        boxShadow: '0 4px 16px rgba(13,27,75,0.3)',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#0a1540'}
+                      onMouseLeave={e => e.currentTarget.style.background = '#0d1b4b'}
+                    >
+                      🔒 Connect Wallet to Bet
+                    </button>
                   ) : (
                     <button
                       id="place-bet-btn"
@@ -573,7 +599,7 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                         opacity: amount > 0 ? 1 : 0.5,
                       }}
                     >
-                      Place {side} Bet — {amount} GL
+                      Place {side} Bet — {amount} GEN
                     </button>
                   )}
 

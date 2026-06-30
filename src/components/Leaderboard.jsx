@@ -85,7 +85,7 @@ export default function Leaderboard() {
                   {player.username}
                 </div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: RANK_COLORS[actualRank], fontWeight: 700, marginTop: '0.2rem' }}>
-                  +{player.profit.toLocaleString()} GL
+                  +{player.profit.toLocaleString()} GEN
                 </div>
                 <span style={{
                   display: 'inline-block',

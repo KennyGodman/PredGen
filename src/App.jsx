@@ -25,6 +25,10 @@ export default function App() {
   const [showWalletModal, setShowWalletModal] = useState(false);
 
   const handlePlaceBet = (marketId, side, amount) => {
+    if (!walletAddress) {
+      setShowWalletModal(true);
+      return;
+    }
     const amt = parseFloat(amount);
     if (!amt || amt <= 0 || amt > walletBalance) return;
     const market = markets.find(m => m.id === marketId);
@@ -102,6 +106,8 @@ export default function App() {
           {activeTab === 'markets' && (
             <MarketsPage
               markets={markets}
+              walletAddress={walletAddress}
+              onConnectClick={() => setShowWalletModal(true)}
               onMarketClick={setSelectedMarket}
               onQuickBet={handlePlaceBet}
               externalSearch={headerSearch}
@@ -286,6 +292,8 @@ export default function App() {
       {liveSelectedMarket && (
         <MarketDetailModal
           market={liveSelectedMarket}
+          walletAddress={walletAddress}
+          onConnectClick={() => setShowWalletModal(true)}
           onClose={() => setSelectedMarket(null)}
           onPlaceBet={handlePlaceBet}
         />

@@ -3,7 +3,14 @@ import { X, Minus, Plus, TrendingUp, ArrowRight } from 'lucide-react';
 
 const PRESETS = [10, 50, 100, 500];
 
-export default function BetConfirmModal({ market, initialSide = 'YES', onClose, onConfirm }) {
+export default function BetConfirmModal({ 
+  market, 
+  initialSide = 'YES', 
+  walletAddress,
+  onConnectClick,
+  onClose, 
+  onConfirm 
+}) {
   const [side, setSide] = useState(initialSide);
   const [amount, setAmount] = useState(50);
   const [inputVal, setInputVal] = useState('50');
@@ -49,10 +56,6 @@ export default function BetConfirmModal({ market, initialSide = 'YES', onClose, 
     setPlaced(true);
     setTimeout(() => { setPlaced(false); onClose(); }, 1800);
   };
-
-  const sideColor   = side === 'YES' ? '#0d1b4b' : '#12062a';
-  const sideBg      = side === 'YES' ? 'rgba(13,27,75,0.06)' : 'rgba(18,6,42,0.06)';
-  const sideBorder  = side === 'YES' ? 'rgba(13,27,75,0.3)'  : 'rgba(18,6,42,0.3)';
 
   return (
     <div
@@ -180,7 +183,7 @@ export default function BetConfirmModal({ market, initialSide = 'YES', onClose, 
             }}>
               <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: 500 }}>Amount</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#9ca3af' }}>GL</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#9ca3af' }}>GEN</span>
                 <input
                   type="number"
                   min="1"
@@ -299,14 +302,14 @@ export default function BetConfirmModal({ market, initialSide = 'YES', onClose, 
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '0.65rem', color: '#9ca3af', fontWeight: 500, marginBottom: '0.2rem' }}>You put</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1rem', color: '#111827' }}>
-                  {amount} GL
+                  {amount} GEN
                 </div>
               </div>
               <ArrowRight size={16} color="#9ca3af" />
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '0.65rem', color: '#9ca3af', fontWeight: 500, marginBottom: '0.2rem' }}>You win</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1rem', color: '#16a34a' }}>
-                  {payout} GL
+                  {payout} GEN
                   <span style={{ fontSize: '0.68rem', color: '#16a34a', opacity: 0.75, marginLeft: '0.3rem' }}>
                     ({multiplier}x)
                   </span>
@@ -330,6 +333,32 @@ export default function BetConfirmModal({ market, initialSide = 'YES', onClose, 
             }}>
               ✓ Bet placed!
             </div>
+          ) : !walletAddress ? (
+            <button
+              id="confirm-bet-btn"
+              onClick={() => {
+                onConnectClick();
+                onClose();
+              }}
+              style={{
+                width: '100%',
+                padding: '0.875rem',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.18s ease',
+                background: '#0d1b4b',
+                color: '#ffffff',
+                border: 'none',
+                boxShadow: '0 4px 16px rgba(13,27,75,0.35)',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#0a1540'}
+              onMouseLeave={e => e.currentTarget.style.background = '#0d1b4b'}
+            >
+              🔒 Connect Wallet to Bet
+            </button>
           ) : (
             <button
               id="confirm-bet-btn"
@@ -367,7 +396,7 @@ export default function BetConfirmModal({ market, initialSide = 'YES', onClose, 
                   : 'none';
               }}
             >
-              {side === 'YES' ? '📈' : '📉'} Place {side} Bet — {amount} GL
+              {side === 'YES' ? '📈' : '📉'} Place {side} Bet — {amount} GEN
             </button>
           )}
 
