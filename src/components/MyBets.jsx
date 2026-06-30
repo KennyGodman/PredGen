@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Activity, CheckCircle, XCircle, Clock } from 'lucide-react';
 
 function formatPool(n) {
@@ -8,6 +8,8 @@ function formatPool(n) {
 }
 
 export default function MyBets({ bets, markets, walletBalance }) {
+  const [expandedBetId, setExpandedBetId] = useState(null);
+
   const totalInvested = bets.reduce((s, b) => s + b.amount, 0);
   const openBets = bets.filter(b => b.status === 'open');
   const settledBets = bets.filter(b => b.status === 'settled');
@@ -83,41 +85,124 @@ export default function MyBets({ bets, markets, walletBalance }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
             {openBets.map(bet => {
               const market = markets.find(m => m.id === bet.marketId);
+              const isExpanded = expandedBetId === bet.id;
+              
+              // Helper to round/format decimals nicely
+              const formatDecimal = (val) => parseFloat(val) % 1 === 0 ? parseFloat(val).toFixed(0) : parseFloat(val).toFixed(2);
+              const potentialProfit = parseFloat(bet.payout) - bet.amount;
+
               return (
-                <div key={bet.id} className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1, minWidth: '200px' }}>
-                    <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
-                      {bet.marketTitle}
-                    </div>
-                    <div className="font-mono" style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                      {new Date(bet.placedAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', flexShrink: 0 }}>
-                    <span style={{
-                      padding: '0.25rem 0.65rem',
-                      borderRadius: '4px',
-                      fontFamily: 'var(--font-display)',
-                      fontWeight: 700,
-                      fontSize: '0.72rem',
-                      background: bet.side === 'YES' ? 'rgba(57,255,20,0.12)' : 'rgba(255,0,127,0.12)',
-                      color: bet.side === 'YES' ? 'var(--accent-green)' : 'var(--accent-pink)',
-                      border: `1px solid ${bet.side === 'YES' ? 'rgba(57,255,20,0.3)' : 'rgba(255,0,127,0.3)'}`,
-                    }}>
-                      {bet.side}
-                    </span>
-                    <div style={{ textAlign: 'right' }}>
-                      <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                        {bet.amount} GEN
+                <div 
+                  key={bet.id} 
+                  className="glass-panel" 
+                  style={{ 
+                    padding: '0', 
+                    overflow: 'hidden', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    borderColor: isExpanded ? 'rgba(0,242,254,0.3)' : 'var(--border-0)',
+                  }}
+                  onClick={() => setExpandedBetId(isExpanded ? null : bet.id)}
+                >
+                  {/* Summary Header row */}
+                  <div style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
+                        {bet.marketTitle}
                       </div>
-                      <div className="font-mono" style={{ fontSize: '0.65rem', color: 'var(--accent-gold)' }}>
-                        → {parseFloat(bet.payout).toFixed(0)} GEN payout
+                      <div className="font-mono" style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                        {new Date(bet.placedAt).toLocaleDateString()}
                       </div>
                     </div>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--accent-cyan)', padding: '0.2rem 0.5rem', background: 'rgba(0,242,254,0.08)', border: '1px solid rgba(0,242,254,0.2)', borderRadius: '4px' }}>
-                      {market?.status === 'resolving' ? 'RESOLVING' : 'OPEN'}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', flexShrink: 0 }}>
+                      <span style={{
+                        padding: '0.25rem 0.65rem',
+                        borderRadius: '4px',
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 700,
+                        fontSize: '0.72rem',
+                        background: bet.side === 'YES' ? 'rgba(57,255,20,0.12)' : 'rgba(255,0,127,0.12)',
+                        color: bet.side === 'YES' ? 'var(--accent-green)' : 'var(--accent-pink)',
+                        border: `1px solid ${bet.side === 'YES' ? 'rgba(57,255,20,0.3)' : 'rgba(255,0,127,0.3)'}`,
+                      }}>
+                        {bet.side}
+                      </span>
+                      <div style={{ textAlign: 'right' }}>
+                        <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                          {bet.amount} GEN
+                        </div>
+                        <div className="font-mono" style={{ fontSize: '0.65rem', color: 'var(--accent-gold)' }}>
+                          → {formatDecimal(bet.payout)} GEN payout
+                        </div>
+                      </div>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--accent-cyan)', padding: '0.2rem 0.5rem', background: 'rgba(0,242,254,0.08)', border: '1px solid rgba(0,242,254,0.2)', borderRadius: '4px' }}>
+                        {market?.status === 'resolving' ? 'RESOLVING' : 'OPEN'}
+                      </span>
+                    </div>
                   </div>
+
+                  {/* Expanded Detail Panel */}
+                  {isExpanded && (
+                    <div 
+                      style={{ 
+                        background: 'rgba(13,27,75,0.02)', 
+                        borderTop: '1px solid var(--border-0)', 
+                        padding: '1rem 1.25rem',
+                        animation: 'fadeIn 0.15s ease',
+                      }}
+                      onClick={e => e.stopPropagation()} // Prevent collapse when clicking details
+                    >
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '0.75rem' }}>
+                        <div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '0.2rem', textTransform: 'uppercase' }}>Position Size</div>
+                          <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>{bet.amount} GEN</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '0.2rem', textTransform: 'uppercase' }}>Potential Payout</div>
+                          <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-gold)' }}>{formatDecimal(bet.payout)} GEN</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '0.2rem', textTransform: 'uppercase' }}>Amount to be Won</div>
+                          <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-green)' }}>+{formatDecimal(potentialProfit)} GEN</div>
+                        </div>
+                        {market && (
+                          <div>
+                            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '0.2rem', textTransform: 'uppercase' }}>Implied Probability</div>
+                            <div className="font-mono" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>
+                              {Math.round((bet.side === 'YES' ? market.yesProb : (1 - market.yesProb)) * 100)}%
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {market?.contractAddress && (
+                        <div style={{ 
+                          marginTop: '0.5rem', 
+                          paddingTop: '0.5rem', 
+                          borderTop: '1px dashed var(--border-0)',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '0.5rem',
+                        }}>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                            ⛓️ Connected to Intelligent Contract: <code style={{ fontFamily: 'var(--font-mono)', color: 'var(--teal)', background: 'rgba(0,242,254,0.05)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>{market.contractAddress}</code>
+                          </span>
+                          <a 
+                            href={`https://studio.genlayer.com/?import-contract=${market.contractAddress}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: 700 }}
+                            onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+                            onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}
+                          >
+                            View in Studio IDE →
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
