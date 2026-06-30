@@ -15,9 +15,25 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('markets');
   const [markets, setMarkets] = useState(initialMarkets);
   const [selectedMarket, setSelectedMarket] = useState(null);
-  const [userBets, setUserBets] = useState([]);
-  const [walletBalance, setWalletBalance] = useState(INITIAL_BALANCE);
+  const [userBets, setUserBets] = useState(() => {
+    const saved = localStorage.getItem('predgen_user_bets');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [onChainBalance, setOnChainBalance] = useState(INITIAL_BALANCE);
+  const [createdMarketsPool, setCreatedMarketsPool] = useState(() => {
+    const saved = localStorage.getItem('predgen_created_pools');
+    return saved ? parseFloat(saved) || 0 : 0;
+  });
   const [headerSearch, setHeaderSearch] = useState('');
+
+  // Computed Display Balance (OnChain balance minus active simulated positions)
+  const activeBetsTotal = userBets.filter(b => b.status === 'open').reduce((sum, b) => sum + b.amount, 0);
+  const walletBalance = Math.max(0, onChainBalance - activeBetsTotal - createdMarketsPool);
+
+  // Save bets to localStorage
+  React.useEffect(() => {
+    localStorage.setItem('predgen_user_bets', JSON.stringify(userBets));
+  }, [userBets]);
   
   // Wallet Connection States
   const [walletAddress, setWalletAddress] = useState(null); // Initialized disconnected
@@ -37,7 +53,7 @@ export default function App() {
             setWalletName('MetaMask');
             setWalletIcon('🦊');
             const balance = await getGenBalance(rawAddr);
-            setWalletBalance(balance);
+            setOnChainBalance(balance);
           }
         } catch (err) {
           console.error("Web3 auto-connect failed:", err);
@@ -53,7 +69,7 @@ export default function App() {
     const interval = setInterval(async () => {
       if (walletName === 'MetaMask' || walletName === 'Coinbase Wallet' || walletName === 'Rainbow') {
         const balance = await getGenBalance(walletAddress);
-        setWalletBalance(balance);
+        setOnChainBalance(balance);
       }
     }, 8000); // Poll every 8s
 
@@ -66,7 +82,14 @@ export default function App() {
       return;
     }
     const amt = parseFloat(amount);
-    if (!amt || amt <= 0 || amt > walletBalance) return;
+    if (!amt || amt <= 0) return;
+    
+    // Explicit Validation Check with popup alert feedback
+    if (amt > walletBalance) {
+      alert(`Insufficient balance! You have ${walletBalance.toFixed(2)} GEN, but you are trying to bet ${amt} GEN. Please reduce the bet size or get testnet GEN from the faucet.`);
+      return;
+    }
+
     const market = markets.find(m => m.id === marketId);
     if (!market || market.status === 'resolved') return;
 
@@ -85,7 +108,6 @@ export default function App() {
       outcome: market.outcome || null,
     }]);
 
-    setWalletBalance(prev => prev - amt);
     setMarkets(prev => prev.map(m =>
       m.id === marketId
         ? { ...m, totalPool: m.totalPool + amt, betsCount: m.betsCount + 1 }
@@ -106,7 +128,13 @@ export default function App() {
       createdAt: new Date().toISOString().split('T')[0],
     };
     setMarkets(prev => [newMarket, ...prev]);
-    setWalletBalance(prev => prev - (parseFloat(marketData.totalPool) || 0));
+    
+    const poolAmt = parseFloat(marketData.totalPool) || 0;
+    setCreatedMarketsPool(prev => {
+      const newVal = prev + poolAmt;
+      localStorage.setItem('predgen_created_pools', String(newVal));
+      return newVal;
+    });
     setActiveTab('markets');
   };
 
@@ -421,9 +449,9 @@ export default function App() {
             if (name === 'MetaMask' || name === 'Coinbase Wallet' || name === 'Rainbow') {
               await switchGenLayerNetwork();
               const balance = await getGenBalance(address);
-              setWalletBalance(balance);
+              setOnChainBalance(balance);
             } else {
-              setWalletBalance(10000); // Standard simulated balance
+              setOnChainBalance(10000); // Standard simulated balance
             }
           }}
         />
