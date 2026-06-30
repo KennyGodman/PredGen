@@ -576,7 +576,8 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                     <input
                       id="bet-amount-input"
                       type="number"
-                      min="1"
+                      min="0.01"
+                      step="0.01"
                       value={amount}
                       onChange={e => setAmount(e.target.value)}
                       className="cyber-input"

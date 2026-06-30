@@ -33,7 +33,7 @@ export default function BetConfirmModal({
 
   /* ── amount sync ─────────────────────────────────────── */
   const setAmt = (v) => {
-    const n = Math.max(1, Math.min(10000, Number(v) || 0));
+    const n = Math.max(0.01, Math.min(10000, Number(v) || 0));
     setAmount(n);
     setInputVal(String(n));
   };
@@ -46,7 +46,7 @@ export default function BetConfirmModal({
 
   const handleInputBlur = () => {
     const n = parseFloat(inputVal);
-    if (isNaN(n) || n <= 0) { setAmount(50); setInputVal('50'); }
+    if (isNaN(n) || n <= 0) { setAmount(0.1); setInputVal('0.1'); }
     else setAmt(n);
   };
 
@@ -186,7 +186,8 @@ export default function BetConfirmModal({
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#9ca3af' }}>GEN</span>
                 <input
                   type="number"
-                  min="1"
+                  min="0.01"
+                  step="0.01"
                   max="10000"
                   value={inputVal}
                   onChange={handleInputChange}
@@ -213,7 +214,7 @@ export default function BetConfirmModal({
             {/* ── Slider row ────────────────────────────── */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <button
-                onClick={() => setAmt(Math.max(1, amount - 10))}
+                onClick={() => setAmt(Math.max(0.01, amount - 10))}
                 style={{
                   width: 28, height: 28,
                   borderRadius: '50%',
