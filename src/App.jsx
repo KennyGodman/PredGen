@@ -202,6 +202,80 @@ export default function App() {
               💬 Submit Feedback
             </a>
           </div>
+          
+          {/* Newsletter subscription form */}
+          <div style={{
+            marginTop: '2rem',
+            maxWidth: '420px',
+            margin: '2.5rem auto 0',
+            background: 'rgba(255, 255, 255, 0.06)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: '16px',
+            padding: '1.25rem',
+            backdropFilter: 'blur(10px)',
+            textAlign: 'left',
+          }}>
+            <h3 style={{
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              color: '#ffffff',
+              marginBottom: '0.3rem',
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '0.02em',
+            }}>
+              Join the PredGen Newsletter
+            </h3>
+            <p style={{
+              fontSize: '0.72rem',
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '0.75rem',
+              lineHeight: 1.4,
+            }}>
+              Get weekly updates on the highest volume AI-resolved prediction markets.
+            </p>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert('Subscribed successfully!');
+                e.target.reset();
+              }}
+              style={{ display: 'flex', gap: '0.5rem' }}
+            >
+              <input
+                type="email"
+                placeholder="your@email.com"
+                required
+                style={{
+                  flex: 1,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: 'var(--r-pill)',
+                  padding: '0.45rem 1rem',
+                  fontSize: '0.8rem',
+                  color: '#ffffff',
+                  outline: 'none',
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  background: '#ffffff',
+                  color: '#0d1b4b',
+                  border: 'none',
+                  borderRadius: 'var(--r-pill)',
+                  padding: '0.45rem 1.1rem',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+              >
+                Subscribe
+              </button>
+            </form>
+          </div>
         </div>
 
         {/* Backed by / Powered by logos */}
