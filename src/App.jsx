@@ -6,7 +6,6 @@ import MarketDetailModal from './components/MarketDetailModal';
 import CreateMarket from './components/CreateMarket';
 import MyBets from './components/MyBets';
 import Leaderboard from './components/Leaderboard';
-import TradingLeagueBanner from './components/TradingLeagueBanner';
 import WalletConnectModal from './components/WalletConnectModal';
 
 const INITIAL_BALANCE = 10000;
@@ -20,9 +19,9 @@ export default function App() {
   const [headerSearch, setHeaderSearch] = useState('');
   
   // Wallet Connection States
-  const [walletAddress, setWalletAddress] = useState('0x3f4a...b82c'); // Default simulation connected
-  const [walletName, setWalletName] = useState('MetaMask');
-  const [walletIcon, setWalletIcon] = useState('🦊');
+  const [walletAddress, setWalletAddress] = useState(null); // Initialized disconnected
+  const [walletName, setWalletName] = useState('');
+  const [walletIcon, setWalletIcon] = useState('');
   const [showWalletModal, setShowWalletModal] = useState(false);
 
   const handlePlaceBet = (marketId, side, amount) => {
@@ -95,8 +94,7 @@ export default function App() {
         onSearchChange={setHeaderSearch}
       />
 
-      {/* ── Trading League floating banner ─────────────── */}
-      <TradingLeagueBanner />
+
 
       {/* ── Main content ───────────────────────────────── */}
       <main style={{ flex: 1, padding: '1.5rem 1.25rem', minHeight: 'calc(100vh - 60px)' }}>

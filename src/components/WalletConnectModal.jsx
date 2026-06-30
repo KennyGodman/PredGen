@@ -33,6 +33,46 @@ export default function WalletConnectModal({ onClose, onConnect }) {
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
+  const connectWallet = async (name, icon, fallbackAddress) => {
+    try {
+      // ── EVM connection via window.ethereum ──────────────────
+      if (name === 'MetaMask' || name === 'Coinbase Wallet' || name === 'Rainbow') {
+        if (typeof window !== 'undefined' && window.ethereum) {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          if (accounts && accounts[0]) {
+            const rawAddr = accounts[0];
+            const shortAddr = `${rawAddr.substring(0, 6)}...${rawAddr.substring(rawAddr.length - 4)}`;
+            onConnect(shortAddr, name, icon);
+            onClose();
+            return;
+          }
+        } else {
+          alert(`No injected EVM provider found. Please install the ${name} browser extension. Connecting simulated dev account instead.`);
+        }
+      } 
+      // ── Solana connection via window.solana ───────────────
+      else if (name === 'Phantom' || name === 'Solflare') {
+        const solanaProvider = window.solana || window.phantom?.solana;
+        if (typeof window !== 'undefined' && solanaProvider) {
+          const resp = await solanaProvider.connect();
+          const rawAddr = resp.publicKey.toString();
+          const shortAddr = `${rawAddr.substring(0, 6)}...${rawAddr.substring(rawAddr.length - 4)}`;
+          onConnect(shortAddr, name, icon);
+          onClose();
+          return;
+        } else {
+          alert(`No injected Solana provider found. Please install the ${name} browser extension. Connecting simulated dev account instead.`);
+        }
+      }
+    } catch (err) {
+      console.error('Wallet connect error:', err);
+    }
+
+    // Fallback if no extensions detected
+    onConnect(fallbackAddress, name, icon);
+    onClose();
+  };
+
   return (
     <div
       style={{
@@ -113,10 +153,7 @@ export default function WalletConnectModal({ onClose, onConnect }) {
                 {category.wallets.map(w => (
                   <button
                     key={w.name}
-                    onClick={() => {
-                      onConnect(w.address, w.name, w.icon);
-                      onClose();
-                    }}
+                    onClick={() => connectWallet(w.name, w.icon, w.address)}
                     style={{
                       width: '100%',
                       display: 'flex',
