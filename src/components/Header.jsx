@@ -23,6 +23,12 @@ export default function Header({
   search, 
   onSearchChange 
 }) {
+  const formatAddress = (addr) => {
+    if (!addr) return '';
+    if (addr.length <= 13) return addr;
+    return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
+  };
+
   const navTabs = [
     { id: 'markets',     label: 'Markets',     icon: TrendingUp },
     { id: 'my-bets',     label: 'My Bets',     icon: Activity },
@@ -222,7 +228,7 @@ export default function Header({
                   }}
                 >
                   <span style={{ fontSize: '0.9rem', marginRight: '0.1rem' }}>{walletIcon || 'Wallet'}</span>
-                  <span className="hide-mobile">{walletAddress}</span>
+                  <span className="hide-mobile">{formatAddress(walletAddress)}</span>
                   <ChevronDown
                     size={11}
                     style={{ transition: 'transform 0.2s', transform: walletOpen ? 'rotate(180deg)' : 'none' }}
@@ -253,7 +259,7 @@ export default function Header({
                       <div style={{ fontSize: '0.65rem', color: '#9ca3af', fontWeight: 500, marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                         Connected with {walletName}
                       </div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 600, color: '#111827' }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: 600, color: '#111827', wordBreak: 'break-all' }}>
                         {walletAddress}
                       </div>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--yes-green)', marginTop: '0.2rem' }}>

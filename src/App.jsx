@@ -25,6 +25,41 @@ export default function App() {
   const [walletIcon, setWalletIcon] = useState('');
   const [showWalletModal, setShowWalletModal] = useState(false);
 
+  // Auto-connect and balance sync
+  React.useEffect(() => {
+    const autoConnect = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts && accounts[0]) {
+            const rawAddr = accounts[0];
+            setWalletAddress(rawAddr);
+            setWalletName('MetaMask');
+            setWalletIcon('🦊');
+            const balance = await getGenBalance(rawAddr);
+            setWalletBalance(balance);
+          }
+        } catch (err) {
+          console.error("Web3 auto-connect failed:", err);
+        }
+      }
+    };
+    autoConnect();
+  }, []);
+
+  // Poll balance updates
+  React.useEffect(() => {
+    if (!walletAddress) return;
+    const interval = setInterval(async () => {
+      if (walletName === 'MetaMask' || walletName === 'Coinbase Wallet' || walletName === 'Rainbow') {
+        const balance = await getGenBalance(walletAddress);
+        setWalletBalance(balance);
+      }
+    }, 8000); // Poll every 8s
+
+    return () => clearInterval(interval);
+  }, [walletAddress, walletName]);
+
   const handlePlaceBet = (marketId, side, amount) => {
     if (!walletAddress) {
       setShowWalletModal(true);

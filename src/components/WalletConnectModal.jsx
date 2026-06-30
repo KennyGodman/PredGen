@@ -41,8 +41,7 @@ export default function WalletConnectModal({ onClose, onConnect }) {
           const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
           if (accounts && accounts[0]) {
             const rawAddr = accounts[0];
-            const shortAddr = `${rawAddr.substring(0, 6)}...${rawAddr.substring(rawAddr.length - 4)}`;
-            onConnect(shortAddr, name, icon);
+            onConnect(rawAddr, name, icon);
             onClose();
             return;
           }
@@ -56,8 +55,7 @@ export default function WalletConnectModal({ onClose, onConnect }) {
         if (typeof window !== 'undefined' && solanaProvider) {
           const resp = await solanaProvider.connect();
           const rawAddr = resp.publicKey.toString();
-          const shortAddr = `${rawAddr.substring(0, 6)}...${rawAddr.substring(rawAddr.length - 4)}`;
-          onConnect(shortAddr, name, icon);
+          onConnect(rawAddr, name, icon);
           onClose();
           return;
         } else {
