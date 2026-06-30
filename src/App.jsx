@@ -306,7 +306,10 @@ export default function App() {
             <form 
               onSubmit={(e) => {
                 e.preventDefault();
-                alert('Subscribed successfully!');
+                setCustomAlert({
+                  title: "Subscription Success! 🎉",
+                  message: "You have successfully subscribed to the PredGen newsletter! We'll keep you updated on the highest-volume AI-resolved prediction markets.",
+                });
                 e.target.reset();
               }}
               style={{ display: 'flex', gap: '0.5rem' }}
