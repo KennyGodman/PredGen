@@ -7,6 +7,7 @@ import CreateMarket from './components/CreateMarket';
 import MyBets from './components/MyBets';
 import Leaderboard from './components/Leaderboard';
 import WalletConnectModal from './components/WalletConnectModal';
+import { switchGenLayerNetwork, getGenBalance } from './services/genlayer';
 
 const INITIAL_BALANCE = 10000;
 
@@ -302,11 +303,19 @@ export default function App() {
       {showWalletModal && (
         <WalletConnectModal
           onClose={() => setShowWalletModal(false)}
-          onConnect={(address, name, icon) => {
+          onConnect={async (address, name, icon) => {
             setWalletAddress(address);
             setWalletName(name);
             setWalletIcon(icon);
-            setWalletBalance(10000); // Reset or preserve balance
+            
+            // Fetch live balance for EVM wallets
+            if (name === 'MetaMask' || name === 'Coinbase Wallet' || name === 'Rainbow') {
+              await switchGenLayerNetwork();
+              const balance = await getGenBalance(address);
+              setWalletBalance(balance);
+            } else {
+              setWalletBalance(10000); // Standard simulated balance
+            }
           }}
         />
       )}

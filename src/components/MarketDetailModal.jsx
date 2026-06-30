@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Code, Clock, Users, TrendingUp, Zap, ChevronDown } from 'lucide-react';
 import { CATEGORY_COLORS } from '../data/markets';
+import { getContractState, sendResolveTransaction } from '../services/genlayer';
 
 function formatPool(n) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(2)}M`;
@@ -21,6 +22,48 @@ export default function MarketDetailModal({ market, walletAddress, onConnectClic
   const [amount, setAmount] = useState(100);
   const [showCode, setShowCode] = useState(false);
   const [betPlaced, setBetPlaced] = useState(false);
+
+  const [isResolvingLive, setIsResolvingLive] = useState(false);
+  const [resolvingTx, setResolvingTx] = useState('');
+
+  // Fetch actual contract state on mount if it's deployed
+  useEffect(() => {
+    if (!market.contractAddress) return;
+    const checkState = async () => {
+      const state = await getContractState(market.contractAddress);
+      if (state && state.has_resolved) {
+        market.status = 'resolved';
+        market.outcome = state.winner === 1 ? 'YES' : 'NO';
+      }
+    };
+    checkState();
+  }, [market]);
+
+  const handleTriggerResolve = async () => {
+    if (!walletAddress) {
+      onConnectClick();
+      onClose();
+      return;
+    }
+    try {
+      setIsResolvingLive(true);
+      const txHash = await sendResolveTransaction(market.contractAddress, walletAddress);
+      setResolvingTx(txHash);
+      
+      // Check back after 5 seconds to verify if consensus resolved it
+      setTimeout(async () => {
+        const state = await getContractState(market.contractAddress);
+        if (state && state.has_resolved) {
+          market.status = 'resolved';
+          market.outcome = state.winner === 1 ? 'YES' : 'NO';
+        }
+        setIsResolvingLive(false);
+      }, 5000);
+    } catch (err) {
+      setIsResolvingLive(false);
+      alert(err.message || "Failed to trigger resolution transaction.");
+    }
+  };
 
   useEffect(() => {
     const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
@@ -434,6 +477,51 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                 </div>
               ) : (
                 <>
+                  {/* AI Resolution Trigger Section */}
+                  {market.contractAddress && (
+                    <div style={{
+                      padding: '1rem',
+                      background: 'rgba(13,27,75,0.04)',
+                      border: '1px solid rgba(13,27,75,0.12)',
+                      borderRadius: '12px',
+                      marginBottom: '1.25rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.6rem',
+                    }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-0)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <span>🤖</span> GenLayer AI Resolution Faucet
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#6b7280', lineHeight: 1.4 }}>
+                        This market is connected to an on-chain Intelligent Contract. Triggering this calls resolve() to query validators.
+                      </div>
+                      
+                      {resolvingTx ? (
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--teal)', wordBreak: 'break-all' }}>
+                          Sent TX: {resolvingTx}
+                        </div>
+                      ) : (
+                        <button
+                          onClick={handleTriggerResolve}
+                          disabled={isResolvingLive}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: '#0d1b4b',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            cursor: isResolvingLive ? 'not-allowed' : 'pointer',
+                            opacity: isResolvingLive ? 0.7 : 1,
+                          }}
+                        >
+                          {isResolvingLive ? 'Resolving via GenVM Validators...' : '⚡ Trigger AI Consensus Resolution'}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
                   {/* YES/NO Toggle */}
                   <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
                     {['YES', 'NO'].map(s => (
