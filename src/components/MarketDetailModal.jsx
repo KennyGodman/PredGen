@@ -17,7 +17,7 @@ const MOCK_ACTIVITY = [
   { user: '0x2e9c...f84d', side: 'YES', amount: 2000, ago: '1h ago' },
 ];
 
-export default function MarketDetailModal({ market, walletAddress, onConnectClick, onClose, onPlaceBet }) {
+export default function MarketDetailModal({ market, walletAddress, onConnectClick, onClose, onPlaceBet, onShowAlert }) {
   const [side, setSide] = useState('YES');
   const [amount, setAmount] = useState(100);
   const [showCode, setShowCode] = useState(false);
@@ -61,7 +61,12 @@ export default function MarketDetailModal({ market, walletAddress, onConnectClic
       }, 5000);
     } catch (err) {
       setIsResolvingLive(false);
-      alert(err.message || "Failed to trigger resolution transaction.");
+      if (onShowAlert) {
+        onShowAlert({
+          title: "Transaction Failed",
+          message: err.message || "Failed to trigger resolution transaction.",
+        });
+      }
     }
   };
 

@@ -7,6 +7,7 @@ import CreateMarket from './components/CreateMarket';
 import MyBets from './components/MyBets';
 import Leaderboard from './components/Leaderboard';
 import WalletConnectModal from './components/WalletConnectModal';
+import AlertModal from './components/AlertModal';
 import { switchGenLayerNetwork, getGenBalance } from './services/genlayer';
 
 const INITIAL_BALANCE = 10000;
@@ -40,6 +41,7 @@ export default function App() {
   const [walletName, setWalletName] = useState('');
   const [walletIcon, setWalletIcon] = useState('');
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [customAlert, setCustomAlert] = useState(null); // Custom Alert Modal State
 
   // Auto-connect and balance sync
   React.useEffect(() => {
@@ -86,7 +88,12 @@ export default function App() {
     
     // Explicit Validation Check with popup alert feedback
     if (amt > walletBalance) {
-      alert(`Insufficient balance! You have ${walletBalance.toFixed(2)} GEN, but you are trying to bet ${amt} GEN. Please reduce the bet size or get testnet GEN from the faucet.`);
+      setCustomAlert({
+        title: "Insufficient Balance",
+        message: `You have ${walletBalance.toFixed(2)} GEN, but you are trying to bet ${amt} GEN. Please reduce the bet size or get testnet GEN from the faucet.`,
+        actionUrl: "https://testnet-faucet.genlayer.foundation",
+        actionText: "Open Faucet"
+      });
       return;
     }
 
@@ -434,12 +441,14 @@ export default function App() {
           onConnectClick={() => setShowWalletModal(true)}
           onClose={() => setSelectedMarket(null)}
           onPlaceBet={handlePlaceBet}
+          onShowAlert={setCustomAlert}
         />
       )}
       {/* ── Wallet Connect Modal ─────────────────────────── */}
       {showWalletModal && (
         <WalletConnectModal
           onClose={() => setShowWalletModal(false)}
+          onShowAlert={setCustomAlert}
           onConnect={async (address, name, icon) => {
             setWalletAddress(address);
             setWalletName(name);
@@ -454,6 +463,17 @@ export default function App() {
               setOnChainBalance(10000); // Standard simulated balance
             }
           }}
+        />
+      )}
+
+      {/* ── Reusable Custom Alert Modal ─────────────────── */}
+      {customAlert && (
+        <AlertModal
+          title={customAlert.title}
+          message={customAlert.message}
+          actionUrl={customAlert.actionUrl}
+          actionText={customAlert.actionText}
+          onClose={() => setCustomAlert(null)}
         />
       )}
     </>

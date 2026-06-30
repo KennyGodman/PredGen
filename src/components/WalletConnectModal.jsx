@@ -26,7 +26,7 @@ const WALLET_CATEGORIES = [
   }
 ];
 
-export default function WalletConnectModal({ onClose, onConnect }) {
+export default function WalletConnectModal({ onClose, onConnect, onShowAlert }) {
   useEffect(() => {
     const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handleEsc);
@@ -46,7 +46,12 @@ export default function WalletConnectModal({ onClose, onConnect }) {
             return;
           }
         } else {
-          alert(`No injected EVM provider found. Please install the ${name} browser extension. Connecting simulated dev account instead.`);
+          if (onShowAlert) {
+            onShowAlert({
+              title: "Provider Extension Missing",
+              message: `No injected EVM provider found. Please install the ${name} extension or use an EVM-injected browser. Connecting simulated dev account instead.`,
+            });
+          }
         }
       } 
       // ── Solana connection via window.solana ───────────────
@@ -59,7 +64,12 @@ export default function WalletConnectModal({ onClose, onConnect }) {
           onClose();
           return;
         } else {
-          alert(`No injected Solana provider found. Please install the ${name} browser extension. Connecting simulated dev account instead.`);
+          if (onShowAlert) {
+            onShowAlert({
+              title: "Phantom Extension Missing",
+              message: `No injected Solana provider found. Please install the ${name} browser extension. Connecting simulated dev account instead.`,
+            });
+          }
         }
       }
     } catch (err) {
