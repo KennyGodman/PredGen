@@ -1,13 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Plus, Trophy, Activity, TrendingUp, Wallet, ChevronDown, LogOut, Copy, Check } from 'lucide-react';
+import { Search, Plus, Trophy, Activity, TrendingUp, Wallet, ChevronDown, LogOut, Copy, Check, Sun, Moon } from 'lucide-react';
+import predgenLogo from '../assets/predgen-logo.png';
 
 function PredGenLogo({ size = 26 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="PredGen logo mark">
-      <path d="M20 4L36 32H4L20 4Z" fill="#0d1b4b" opacity="0.9" />
-      <path d="M20 12L30 28H10L20 12Z" fill="#ffffff" opacity="0.9" />
-      <path d="M20 20L25 28H15L20 20Z" fill="#0d1b4b" opacity="0.8" />
-    </svg>
+    <img
+      src={predgenLogo}
+      alt="PredGen logo"
+      width={size}
+      height={size}
+      style={{
+        objectFit: 'contain',
+        display: 'block',
+        filter: 'drop-shadow(0 2px 6px rgba(0,100,255,0.35))',
+        borderRadius: '6px',
+      }}
+    />
   );
 }
 
@@ -21,7 +29,9 @@ export default function Header({
   onConnectClick,
   onDisconnect,
   search, 
-  onSearchChange 
+  onSearchChange,
+  darkMode,
+  onToggleDarkMode,
 }) {
   const formatAddress = (addr) => {
     if (!addr) return '';
@@ -55,12 +65,13 @@ export default function Header({
 
   return (
     <header style={{
-      background: '#ffffff',
-      borderBottom: '1px solid rgba(0,0,0,0.08)',
+      background: 'var(--bg-header)',
+      borderBottom: '1px solid var(--border-0)',
       position: 'sticky',
       top: 0,
       zIndex: 200,
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      boxShadow: 'var(--shadow-header)',
+      transition: 'background 0.3s ease, border-color 0.3s ease',
     }}>
       <div style={{
         maxWidth: '1280px',
@@ -78,7 +89,7 @@ export default function Header({
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}
           aria-label="Go to markets"
         >
-          <PredGenLogo size={28} />
+          <PredGenLogo size={48} />
           <span style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
@@ -173,6 +184,40 @@ export default function Header({
               </button>
             );
           })}
+
+          {/* ── Dark / Light Mode Toggle ──────────────────── */}
+          <button
+            id="theme-toggle-btn"
+            onClick={onToggleDarkMode}
+            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '34px',
+              height: '34px',
+              borderRadius: 'var(--r-pill)',
+              border: '1.5px solid var(--border-1)',
+              background: darkMode ? 'var(--bg-3)' : 'var(--bg-2)',
+              color: darkMode ? '#f0c040' : 'var(--text-2)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              flexShrink: 0,
+              outline: 'none',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--bg-4)';
+              e.currentTarget.style.borderColor = 'var(--border-2)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = darkMode ? 'var(--bg-3)' : 'var(--bg-2)';
+              e.currentTarget.style.borderColor = 'var(--border-1)';
+            }}
+          >
+            {darkMode
+              ? <Sun size={15} strokeWidth={2} />
+              : <Moon size={15} strokeWidth={2} />}
+          </button>
 
           {/* Wallet balance pill */}
           {walletAddress && (

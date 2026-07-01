@@ -15,6 +15,19 @@ const INITIAL_BALANCE = 10000;
 export default function App() {
   const [activeTab, setActiveTab] = useState('markets');
   const [markets, setMarkets] = useState(initialMarkets);
+
+  // ── Dark mode ────────────────────────────────────────────
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('predgen_dark_mode');
+    return saved ? saved === 'true' : false;
+  });
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    localStorage.setItem('predgen_dark_mode', darkMode);
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [userBets, setUserBets] = useState(() => {
     const saved = localStorage.getItem('predgen_user_bets');
@@ -197,6 +210,8 @@ export default function App() {
         }}
         search={headerSearch}
         onSearchChange={setHeaderSearch}
+        darkMode={darkMode}
+        onToggleDarkMode={toggleDarkMode}
       />
 
 
