@@ -78,7 +78,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, [walletAddress, walletName]);
 
-  const handlePlaceBet = (marketId, side, amount) => {
+  const handlePlaceBet = async (marketId, side, amount) => {
     if (!walletAddress) {
       setShowWalletModal(true);
       return;
@@ -104,7 +104,29 @@ export default function App() {
     const payout = amt / prob;
 
     const betId = `bet-${Date.now()}`;
-    const txHash = getDeterministicTxHash(betId);
+    let txHash = '';
+
+    if (typeof window !== 'undefined' && window.ethereum && walletAddress && (walletName === 'MetaMask' || walletName === 'Coinbase Wallet' || walletName === 'Rainbow')) {
+      try {
+        await switchGenLayerNetwork();
+        const weiAmount = BigInt(Math.floor(amt * 1e18));
+        const valueHex = '0x' + weiAmount.toString(16);
+        
+        txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: walletAddress,
+            to: market.contractAddress || '0x0000000000000000000000000000000000000000',
+            value: valueHex,
+          }],
+        });
+      } catch (err) {
+        console.error("Failed to send real transaction:", err);
+        throw err;
+      }
+    } else {
+      txHash = getDeterministicTxHash(betId);
+    }
 
     setUserBets(prev => [...prev, {
       id: betId,

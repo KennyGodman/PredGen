@@ -51,18 +51,22 @@ export default function BetConfirmModal({
     else setAmt(n);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (amount <= 0) return;
-    const tx = onConfirm(market.id, side, amount);
-    if (tx) {
-      setPlacedTx(tx);
+    try {
+      const tx = await onConfirm(market.id, side, amount);
+      if (tx) {
+        setPlacedTx(tx);
+      }
+      setPlaced(true);
+      setTimeout(() => { 
+        setPlaced(false); 
+        setPlacedTx('');
+        onClose(); 
+      }, 4000);
+    } catch (err) {
+      console.error("Quick bet confirmation failed:", err);
     }
-    setPlaced(true);
-    setTimeout(() => { 
-      setPlaced(false); 
-      setPlacedTx('');
-      onClose(); 
-    }, 4000);
   };
 
   return (

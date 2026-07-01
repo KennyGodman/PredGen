@@ -111,17 +111,21 @@ export default function MarketDetailModal({ market, walletAddress, onConnectClic
     pink:   'rgba(220,38,38,0.2)',
   }[catColor] || 'rgba(13,27,75,0.2)';
 
-  const handleBet = () => {
+  const handleBet = async () => {
     if (amount <= 0) return;
-    const tx = onPlaceBet(market.id, side, parseFloat(amount));
-    if (tx) {
-      setPlacedTx(tx);
+    try {
+      const tx = await onPlaceBet(market.id, side, parseFloat(amount));
+      if (tx) {
+        setPlacedTx(tx);
+      }
+      setBetPlaced(true);
+      setTimeout(() => {
+        setBetPlaced(false);
+        setPlacedTx('');
+      }, 5000);
+    } catch (err) {
+      console.error("Bet transaction failed:", err);
     }
-    setBetPlaced(true);
-    setTimeout(() => {
-      setBetPlaced(false);
-      setPlacedTx('');
-    }, 5000);
   };
 
   return (
