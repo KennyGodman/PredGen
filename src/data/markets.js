@@ -21,6 +21,7 @@ export const initialMarkets = [
     volume24h: 12300,
     resolveDate: '2026-12-31',
     status: 'open',
+    contractAddress: '0x17c9A588Cd52136d88c2274EFCDA6D88a38FecbC',
     resolutionSource: 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
     resolutionPrompt: `web_result = get_webpage("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT")
 price = float(json.loads(web_result)["price"])
@@ -40,6 +41,7 @@ return price >= 150000`,
     volume24h: 8100,
     resolveDate: '2026-08-31',
     status: 'open',
+    contractAddress: '0x32A6fF8D88CC20a4177ecbC0f8Cfc998dAb7dCC2',
     resolutionSource: 'https://genlayer.com/blog',
     resolutionPrompt: `web_result = get_webpage("https://genlayer.com/blog")
 return call_llm(
@@ -60,6 +62,7 @@ return call_llm(
     volume24h: 31500,
     resolveDate: '2026-12-31',
     status: 'open',
+    contractAddress: '0x582cbC0f8Cfc998dAb7dcC088Cc20a4177ecbC01',
     resolutionSource: 'https://openai.com/news',
     resolutionPrompt: `web_result = get_webpage("https://openai.com/news")
 return call_llm(
@@ -80,6 +83,7 @@ return call_llm(
     volume24h: 9200,
     resolveDate: '2026-12-31',
     status: 'open',
+    contractAddress: '0x7dcC088Cc20a4177ecbC0f8Cfc998dAb7dCC0488',
     resolutionSource: 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd',
     resolutionPrompt: `web_result = get_webpage("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
 price = json.loads(web_result)["ethereum"]["usd"]
@@ -99,6 +103,7 @@ return price >= 10000`,
     volume24h: 4300,
     resolveDate: '2027-01-01',
     status: 'open',
+    contractAddress: '0x088Cc20a4177ecbC0f8Cfc998dAb7dCC088Cc212',
     resolutionSource: 'https://scholar.google.com',
     resolutionPrompt: `web_result = get_webpage("https://scholar.google.com/scholar?q=AI+bar+exam+90th+percentile+2026")
 return call_llm(
@@ -119,6 +124,7 @@ return call_llm(
     volume24h: 18700,
     resolveDate: '2026-09-30',
     status: 'open',
+    contractAddress: '0x4177ecbC0f8Cfc998dAb7dCC088Cc20a4177ecbC34',
     resolutionSource: 'https://congress.gov',
     resolutionPrompt: `web_result = get_webpage("https://congress.gov/search?q=cryptocurrency+regulation+2026&congress=119")
 return call_llm(
@@ -139,6 +145,7 @@ return call_llm(
     volume24h: 7600,
     resolveDate: '2026-12-31',
     status: 'open',
+    contractAddress: '0x88Cc20a4177ecbC0f8Cfc998dAb7dCC088Cc20555',
     resolutionSource: 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd',
     resolutionPrompt: `web_result = get_webpage("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=solana,ethereum")
 data = json.loads(web_result)
@@ -160,6 +167,7 @@ return sol_cap > eth_cap`,
     volume24h: 2800,
     resolveDate: '2026-12-31',
     status: 'open',
+    contractAddress: '0x0f8Cfc998dAb7dcC088Cc20a4177ecbC0f8Cfc998',
     resolutionSource: 'https://apple.com/newsroom',
     resolutionPrompt: `web_result = get_webpage("https://apple.com/newsroom")
 return call_llm(
@@ -201,6 +209,7 @@ return winner in ["Brazil", "Argentina"]`,
     resolveDate: '2026-05-31',
     status: 'resolved',
     outcome: 'YES',
+    contractAddress: '0xCc0f8Cfc998dAb7dcC088Cc20a4177ecbC0f8Cfc99',
     resolutionSource: 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
     resolutionPrompt: `web_result = get_webpage("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h")
 prices = [float(c[4]) for c in json.loads(web_result)]
@@ -220,6 +229,7 @@ return any(p >= 120000 for p in prices)`,
     volume24h: 19400,
     resolveDate: '2026-06-20',
     status: 'resolving',
+    contractAddress: '0xcB48Cc70a41877ecbC0f8Cfc998dAb7dcC088Cc20a',
     resolutionSource: 'https://federalreserve.gov/monetarypolicy/fomccalendars.htm',
     resolutionPrompt: `web_result = get_webpage("https://federalreserve.gov/monetarypolicy/fomccalendars.htm")
 return call_llm(
@@ -240,6 +250,7 @@ return call_llm(
     volume24h: 8900,
     resolveDate: '2026-12-31',
     status: 'open',
+    contractAddress: '0x0f8Cfc998dAb7dcC088Cc20a4177ecbC0f8Cfc99812',
     resolutionSource: 'https://arxiv.org',
     resolutionPrompt: `web_result = get_webpage("https://arxiv.org/search/?searchtype=all&query=AI+Turing+Test+passed+2026")
 return call_llm(

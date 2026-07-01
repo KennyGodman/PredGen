@@ -25,6 +25,7 @@ export default function MarketDetailModal({ market, walletAddress, onConnectClic
 
   const [isResolvingLive, setIsResolvingLive] = useState(false);
   const [resolvingTx, setResolvingTx] = useState('');
+  const [placedTx, setPlacedTx] = useState('');
 
   // Fetch actual contract state on mount if it's deployed
   useEffect(() => {
@@ -112,9 +113,15 @@ export default function MarketDetailModal({ market, walletAddress, onConnectClic
 
   const handleBet = () => {
     if (amount <= 0) return;
-    onPlaceBet(market.id, side, parseFloat(amount));
+    const tx = onPlaceBet(market.id, side, parseFloat(amount));
+    if (tx) {
+      setPlacedTx(tx);
+    }
     setBetPlaced(true);
-    setTimeout(() => setBetPlaced(false), 3000);
+    setTimeout(() => {
+      setBetPlaced(false);
+      setPlacedTx('');
+    }, 5000);
   };
 
   return (
@@ -642,8 +649,18 @@ ${market.resolutionPrompt.split('\n').map(l => '        ' + l).join('\n')}
                       fontFamily: 'var(--font-body)',
                       fontSize: '0.875rem',
                       fontWeight: 600,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.4rem',
                     }}>
-                      ✓ Bet placed!
+                      <div>✓ Bet placed successfully!</div>
+                      {placedTx && (
+                        <div style={{ fontSize: '0.72rem', color: '#4b5563', fontFamily: 'var(--font-mono)', wordBreak: 'break-all', fontWeight: 500 }}>
+                          TX: <a href={`https://explorer-bradbury.genlayer.com/tx/${placedTx}`} target="_blank" rel="noreferrer" style={{ color: 'var(--teal)', textDecoration: 'underline' }}>
+                            {placedTx.slice(0, 10)}...{placedTx.slice(-8)}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ) : !walletAddress ? (
                     <button

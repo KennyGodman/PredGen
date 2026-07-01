@@ -115,3 +115,19 @@ export async function sendResolveTransaction(contractAddress, userAddress) {
     throw error;
   }
 }
+
+export function getDeterministicTxHash(id) {
+  let hash = 0;
+  const str = String(id || 'default');
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  let hex = '';
+  // Generate 64 hex characters deterministically
+  for (let i = 0; i < 64; i++) {
+    const val = Math.abs((hash + i * 2654435761) % 16);
+    hex += val.toString(16);
+  }
+  return '0x' + hex;
+}

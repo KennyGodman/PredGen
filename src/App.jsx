@@ -8,7 +8,7 @@ import MyBets from './components/MyBets';
 import Leaderboard from './components/Leaderboard';
 import WalletConnectModal from './components/WalletConnectModal';
 import AlertModal from './components/AlertModal';
-import { switchGenLayerNetwork, getGenBalance } from './services/genlayer';
+import { switchGenLayerNetwork, getGenBalance, getDeterministicTxHash } from './services/genlayer';
 
 const INITIAL_BALANCE = 10000;
 
@@ -103,8 +103,12 @@ export default function App() {
     const prob = side === 'YES' ? market.yesProb : (1 - market.yesProb);
     const payout = amt / prob;
 
+    const betId = `bet-${Date.now()}`;
+    const txHash = getDeterministicTxHash(betId);
+
     setUserBets(prev => [...prev, {
-      id: `bet-${Date.now()}`,
+      id: betId,
+      txHash,
       marketId,
       marketTitle: market.title,
       side,
@@ -120,12 +124,15 @@ export default function App() {
         ? { ...m, totalPool: m.totalPool + amt, betsCount: m.betsCount + 1 }
         : m
     ));
+
+    return txHash;
   };
 
   const handleCreateMarket = (marketData) => {
+    const newId = `m${Date.now()}`;
     const newMarket = {
       ...marketData,
-      id: `m${Date.now()}`,
+      id: newId,
       yesProb: 0.5,
       volume24h: 0,
       betsCount: 0,
@@ -133,6 +140,7 @@ export default function App() {
       outcome: null,
       featured: false,
       createdAt: new Date().toISOString().split('T')[0],
+      contractAddress: getDeterministicTxHash(newId).slice(0, 42),
     };
     setMarkets(prev => [newMarket, ...prev]);
     

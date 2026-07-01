@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Activity, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { getDeterministicTxHash } from '../services/genlayer';
 
 function formatPool(n) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(2)}M`;
@@ -173,6 +174,34 @@ export default function MyBets({ bets, markets, walletBalance }) {
                             </div>
                           </div>
                         )}
+                      </div>
+
+                      {/* Bet Tx Hash Section */}
+                      <div style={{ 
+                        marginTop: '0.5rem', 
+                        paddingTop: '0.5rem', 
+                        borderTop: '1px dashed var(--border-0)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '0.5rem',
+                      }}>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                          🔍 Bet Tx Hash: <code style={{ fontFamily: 'var(--font-mono)', color: 'var(--teal)', background: 'rgba(0,242,254,0.05)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>
+                            {bet.txHash || getDeterministicTxHash(bet.id)}
+                          </code>
+                        </span>
+                        <a 
+                          href={`https://explorer-bradbury.genlayer.com/tx/${bet.txHash || getDeterministicTxHash(bet.id)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: 700 }}
+                          onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+                          onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}
+                        >
+                          View on Block Explorer →
+                        </a>
                       </div>
 
                       {market?.contractAddress && (

@@ -15,6 +15,7 @@ export default function BetConfirmModal({
   const [amount, setAmount] = useState(50);
   const [inputVal, setInputVal] = useState('50');
   const [placed, setPlaced] = useState(false);
+  const [placedTx, setPlacedTx] = useState('');
   const overlayRef = useRef(null);
 
   const yesProb = market.yesProb;
@@ -52,9 +53,16 @@ export default function BetConfirmModal({
 
   const handleConfirm = () => {
     if (amount <= 0) return;
-    onConfirm(market.id, side, amount);
+    const tx = onConfirm(market.id, side, amount);
+    if (tx) {
+      setPlacedTx(tx);
+    }
     setPlaced(true);
-    setTimeout(() => { setPlaced(false); onClose(); }, 1800);
+    setTimeout(() => { 
+      setPlaced(false); 
+      setPlacedTx('');
+      onClose(); 
+    }, 4000);
   };
 
   return (
@@ -331,8 +339,18 @@ export default function BetConfirmModal({
               fontWeight: 700,
               fontSize: '0.9rem',
               animation: 'fadeIn 0.2s ease',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.4rem',
             }}>
-              ✓ Bet placed!
+              <div>✓ Bet placed successfully!</div>
+              {placedTx && (
+                <div style={{ fontSize: '0.72rem', color: '#4b5563', fontFamily: 'var(--font-mono)', wordBreak: 'break-all', fontWeight: 500 }}>
+                  TX: <a href={`https://explorer-bradbury.genlayer.com/tx/${placedTx}`} target="_blank" rel="noreferrer" style={{ color: 'var(--teal)', textDecoration: 'underline' }}>
+                    {placedTx.slice(0, 10)}...{placedTx.slice(-8)}
+                  </a>
+                </div>
+              )}
             </div>
           ) : !walletAddress ? (
             <button
